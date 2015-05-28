@@ -5,18 +5,6 @@ package process
 /*
 #include <stdlib.h>
 #include "libproc.h"
- 
-int get_proc_name(int pid, char* name, int name_size) {
-  return proc_name(pid, name, name_size);
-}
-
-int get_proc_count() {
-  return proc_listallpids(NULL, 0);
-}
-
-//int get_pid_list(int* pids, int count) {
-//  return proc_listallpids(pids, count);
-//}
 */
 import "C"
 import "unsafe"
@@ -24,8 +12,9 @@ import "strings"
 
 func nameOf(pid int) string {
 	name := C.CString(strings.Repeat("\x00", 1024))
-	defer C.free(unsafe.Pointer(name))
-	nameLen := C.get_proc_name(C.int(pid), name, C.int(1024))
+	namePtr := unsafe.Pointer(name)
+	defer C.free(namePtr)
+	nameLen := C.proc_name(C.int(pid), namePtr, C.uint32_t(1024))
 	var result string
 
 	if nameLen > 0 {
@@ -38,7 +27,7 @@ func nameOf(pid int) string {
 }
 
 func count() int {
-	procs := int(C.get_proc_count())
+	procs := int(C.proc_listallpids(nil, C.int(0)))
 	if procs <= 0 {
 		return 0
 	} else {
