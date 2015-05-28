@@ -18,7 +18,7 @@ func nameOf(pid int) string {
 	nameLen := C.call_proc_name(C.int(pid), name, C.int(1024))
 	var result string
 
-	if (nameLen > 0) {
+	if nameLen > 0 {
 		result = C.GoString(name);
 	} else {
 		result = ""
