@@ -16,11 +16,11 @@ import (
 const procFsRoot = "/proc"
 const procFsPidPath = "/proc/%d/%s"
 
-func openPid(pid int, name string) (*os.File, error) {
+func procFsOpenPid(pid int, name string) (*os.File, error) {
 	return os.Open(fmt.Sprintf(procFsPidPath, pid, name))
 }
 
-func parseProcName(status *os.File) string {
+func procFsParseProcName(status *os.File) string {
 	procName := ""
 
 	scanner := bufio.NewScanner(status)
@@ -35,7 +35,7 @@ func parseProcName(status *os.File) string {
 	return procName
 }
 
-func listAllPids() []int {
+func procFsListPids() []int {
 	items, err := ioutil.ReadDir(procFsRoot)
 	if err != nil {
 		return []int{}
@@ -45,7 +45,7 @@ func listAllPids() []int {
 	pids[0] = -1 // mark value
 	i := 0
 	for _,item := range items {
-		pid := tryNameToPid(item.Name())
+		pid := procFsTryNameToPid(item.Name())
 		if pid > 0 {
 			pids[i] = pid
 			i++
@@ -58,7 +58,7 @@ func listAllPids() []int {
 	return []int{}
 }
 
-func tryNameToPid(name string) int {
+func procFsTryNameToPid(name string) int {
 	pid, err := strconv.Atoi(name)
 	if err != nil  || pid <= 0 {
 		return -1

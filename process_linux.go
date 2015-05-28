@@ -5,19 +5,19 @@ package process
 func nameOf(pid int) string {
 	procName := ""
 
-	statusFile, err := openPid(pid, "status")
+	statusFile, err := procFsOpenPid(pid, "status")
 	if err == nil {
 		defer statusFile.Close()
-		procName = parseProcName(statusFile)
+		procName = procFsParseProcName(statusFile)
 	}
 	
 	return procName
 }
 
 func count() int {
-	return len(listAllPids())
+	return len(procFsListPids())
 }
 
 func listPids() []int {
-	return listAllPids()
+	return procFsListPids()
 }
