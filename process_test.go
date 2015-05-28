@@ -41,3 +41,16 @@ func TestListPids(t *testing.T) {
 		fmt.Printf("\n")
 	}
 }
+
+func TestPidOf(t *testing.T) {
+
+	cases := testCasesPidOf()
+	
+	for _, c := range cases {
+		got := PidOf(c.in)
+		if got != c.want {
+			t.Errorf("PidOf(%s) == %d, want %d", c.in, got, c.want)
+		}
+	}
+
+}

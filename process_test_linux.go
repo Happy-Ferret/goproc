@@ -16,3 +16,18 @@ func testCasesNameOf() []struct {
 
 	return cases
 }
+
+func testCasesPidOf() []struct {
+	in string
+	want int} {
+
+	cases := []struct {
+		in string
+		want int
+	} {
+		{"init", 1},
+		{"sshd", 562},
+	}
+
+	return cases
+}

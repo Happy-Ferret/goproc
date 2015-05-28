@@ -16,3 +16,18 @@ func testCasesNameOf() []struct {
 
 	return cases
 }
+
+func testCasesPidOf() []struct {
+	in string
+	want int} {
+
+	cases := []struct {
+		in string
+		want int
+	} {
+		{"syslogd", 38},
+		{"launchd", 1},
+	}
+
+	return cases
+}
