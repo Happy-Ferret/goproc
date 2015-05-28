@@ -13,6 +13,10 @@ int get_proc_name(int pid, char* name, int name_size) {
 int get_proc_count() {
   return proc_listallpids(NULL, 0);
 }
+
+//int get_pid_list(int* pids, int count) {
+//  return proc_listallpids(pids, count);
+//}
 */
 import "C"
 import "unsafe"
@@ -43,5 +47,34 @@ func count() int {
 }
 
 func listPids() []int {
-	return make([]int, 0)
+	cnt := count()
+	if cnt <= 0 {
+		return make([]int, 0)
+	}
+	pids := C.malloc(C.size_t(cnt * int(unsafe.Sizeof(C.int(0)))))
+	if pids == nil {
+		return make([]int, 0)
+	}
+	defer C.free(unsafe.Pointer(pids))
+	pidsCnt := C.proc_listallpids(pids, C.int(cnt * int(unsafe.Sizeof(C.int(0)))))
+	if (pidsCnt <= 0) {
+		return make([]int, 0)
+	}
+	casted := (*[1<<20]C.int)(unsafe.Pointer(pids))
+	pidsCopy := make([]int, cnt)
+	for i := 0; i < cnt; i++ {
+		pidsCopy[i] = int(casted[i])
+	}
+	return trimPidArray(pidsCopy)
+}
+
+func trimPidArray(pids []int) []int {
+	index := len(pids)
+	for i,e := range pids {
+		if e <= 0 {
+			index = i
+			break
+		}
+	}
+	return pids[0:index]
 }
