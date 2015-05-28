@@ -2,7 +2,10 @@
 
 package process
 
-import "testing"
+import (
+	//"fmt"
+	"testing"
+)
 
 func TestNameOf(t *testing.T) {
 
@@ -14,4 +17,15 @@ func TestNameOf(t *testing.T) {
 			t.Errorf("NameOf(%d) == %s, want %s", c.in, got, c.want)
 		}
 	}
+}
+
+func TestCount(t *testing.T) {
+	want := true
+	got := Count();
+	if got > 0 != want {
+		t.Errorf("Count() > 0 == %t, want %t", got, want)
+	}
+	//else {
+	//	fmt.Printf("Count() == %d\n", got)
+	//}
 }
