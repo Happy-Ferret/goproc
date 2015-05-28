@@ -41,3 +41,7 @@ func count() int {
 		return procs
 	}
 }
+
+func listPids() []int {
+	return make([]int, 0)
+}

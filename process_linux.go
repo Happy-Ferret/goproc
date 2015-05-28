@@ -13,3 +13,11 @@ func nameOf(pid int) string {
 	
 	return procName
 }
+
+func count() int {
+	return len(listAllPids())
+}
+
+func listPids() []int {
+	return listAllPids()
+}

@@ -9,8 +9,11 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"io/ioutil"
+	"strconv"
 )
 
+const procFsRoot = "/proc"
 const procFsPidPath = "/proc/%d/%s"
 
 func openPid(pid int, name string) (*os.File, error) {
@@ -30,4 +33,36 @@ func parseProcName(status *os.File) string {
 	//}
 
 	return procName
+}
+
+func listAllPids() []int {
+	items, err := ioutil.ReadDir(procFsRoot)
+	if err != nil {
+		return []int{}
+	}
+	
+	pids := make([]int, len(items))
+	pids[0] = -1 // mark value
+	i := 0
+	for _,item := range items {
+		pid := tryNameToPid(item.Name())
+		if pid > 0 {
+			pids[i] = pid
+			i++
+		}
+	}
+
+	if pids[0] > 0 { // some pid added
+		return pids[0:i]
+	}
+	return []int{}
+}
+
+func tryNameToPid(name string) int {
+	pid, err := strconv.Atoi(name)
+	if err != nil  || pid <= 0 {
+		return -1
+	}
+	
+	return pid
 }

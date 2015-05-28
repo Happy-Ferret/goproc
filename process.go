@@ -9,3 +9,7 @@ func NameOf(pid int) string {
 func Count() int {
 	return count()
 }
+
+func ListPids() []int {
+	return listPids()
+}

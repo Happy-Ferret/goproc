@@ -3,7 +3,7 @@
 package process
 
 import (
-	//"fmt"
+	"fmt"
 	"testing"
 )
 
@@ -23,9 +23,21 @@ func TestCount(t *testing.T) {
 	want := true
 	got := Count();
 	if got > 0 != want {
-		t.Errorf("Count() > 0 == %t, want %t", got, want)
+		t.Errorf("(Count() == %d) > 0 == %t, want %t", got, got > 0, want)
+	} else {
+		fmt.Printf("Count() == %d\n", got)
 	}
-	//else {
-	//	fmt.Printf("Count() == %d\n", got)
-	//}
+}
+
+func TestListPids(t *testing.T) {
+	want := true
+	got := ListPids()
+	if (len(got) > 0 != want) {
+		t.Errorf("(len(ListPids()) == %d) > 0 == %t, want %t", len(got), len(got) > 0, want)
+	} else {
+		for _,pid := range got {
+			fmt.Printf("%d ", pid)
+		}
+		fmt.Printf("\n")
+	}
 }
