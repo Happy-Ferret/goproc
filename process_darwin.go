@@ -24,5 +24,5 @@ func nameOf(pid int) string {
 		result = ""
 	}
 
-	return result;
+	return result
 }
