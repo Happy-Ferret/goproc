@@ -13,3 +13,17 @@ func Count() int {
 func ListPids() []int {
 	return listPids()
 }
+
+func PidOf(name string) int {
+	result := -1
+	
+	for _,pid := range ListPids() {
+		nameOfPid := NameOf(pid)
+		if name == nameOfPid {
+			result = pid 
+			break
+		}
+	}
+
+	return result
+}
