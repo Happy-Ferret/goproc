@@ -9,7 +9,7 @@ package process
 import "C"
 import "unsafe"
 import "strings"
-import "strconv"
+//import "strconv"
 //import "fmt"
 
 func nameOf(pid int) string {
@@ -75,7 +75,7 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 	for _, key := range keys {
 		switch key {
 		case PropertyVMSize:
-			result[PropertyVMSize] = strconv.FormatInt(int64(casted.pti_virtual_size), 10)
+			result[PropertyVMSize] = int64(casted.pti_virtual_size)
 		}
 	}
 

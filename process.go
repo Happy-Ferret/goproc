@@ -6,7 +6,7 @@ const (
 	PropertyVMSize = iota
 )
 
-type PropertyMap map[int]string
+type PropertyMap map[int]interface{}
 
 func NameOf(pid int) string {
 	return nameOf(pid)
