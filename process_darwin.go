@@ -10,6 +10,7 @@ import "C"
 import "unsafe"
 import "strings"
 import "strconv"
+//import "fmt"
 
 type go_proc_taskinfo struct { //sys/proc_info.h/proc_taskinfo
 	pti_virtual_size C.uint64_t			// virtual memory size (bytes)
@@ -82,16 +83,18 @@ func listPids() []int {
 func propertiesOf(pid int, keys []int) map[int]string {
 	result := make(map[int]string)
 
-	size := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, nil, 0)
-	if size <= 0 {
-		return result
-	}
+	//size := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, nil, 0)
+	//if size <= 0 {
+	//	panic(fmt.Sprintf("size=%d\n", size)) //DEBUG
+	//	return result
+	//}
 	
-	info := C.malloc(C.size_t(size))
+	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
 	defer C.free(info)
-	actualSize := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, info, C.int(unsafe.Sizeof(info)))
+	actualSize := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, info, C.int(C.PROC_PIDTASKINFO_SIZE)) //C.int(unsafe.Sizeof(info)))
 	// checking size as described in http://goo.gl/Lta0IO
 	if actualSize < C.int(unsafe.Sizeof(info)) {
+		//panic(fmt.Sprintf("actualsize=%d\n, sizeof(info)=%d", int(actualSize), int(C.int(unsafe.Sizeof(info))))) //DEBUG
 		return result
 	}
 	casted := (*go_proc_taskinfo)(info)

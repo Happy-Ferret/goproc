@@ -52,5 +52,13 @@ func TestPidOf(t *testing.T) {
 			t.Errorf("PidOf(%s) == %d, want %d", c.in, got, c.want)
 		}
 	}
+}
 
+func TestPropertiesOf(t *testing.T) {
+	//want := make(map[int]string)
+	//want[PropertyVMSize] = ""
+	
+	got := propertiesOf(1, []int{PropertyVMSize})
+	
+	fmt.Printf("VMSize: %s\n", got[PropertyVMSize])
 }
