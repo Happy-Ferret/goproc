@@ -10,27 +10,28 @@ import "C"
 import "unsafe"
 import "strings"
 import "strconv"
+
 //import "fmt"
 
-type go_proc_taskinfo struct {				// same as sys/proc_info.h/proc_taskinfo
-	pti_virtual_size C.uint64_t				// virtual memory size (bytes)
-	pti_resident_size C.uint64_t			// resident memory size (bytes)
-	pti_total_user C.uint64_t				// total time
-	pti_total_system C.uint64_t
-	pti_threads_user C.uint64_t				// existing threads only
-	pti_threads_system C.uint64_t
-	pti_policy C.int32_t					// default policy for new threads
-	pti_faults C.int32_t					// number of page faults
-	pti_pageins C.int32_t					// number of actual pageins
-	pti_cow_faults C.int32_t				// number of copy-on-write faults
-	pti_messages_sent C.int32_t				// number of messages sent
-	pti_messages_received C.int32_t			// number of messages received
-	pti_syscalls_mach C.int32_t				// number of mach system calls
-	pti_syscalls_unix C.int32_t				// number of unix system calls
-	pti_csw C.int32_t			          	// number of context switches
-	pti_threadnum C.int32_t					// number of threads in the task
-	pti_numrunning C.int32_t				// number of running threads
-	pti_priority C.int32_t					// task priority
+type go_proc_taskinfo struct { // same as sys/proc_info.h/proc_taskinfo
+	pti_virtual_size      C.uint64_t // virtual memory size (bytes)
+	pti_resident_size     C.uint64_t // resident memory size (bytes)
+	pti_total_user        C.uint64_t // total time
+	pti_total_system      C.uint64_t
+	pti_threads_user      C.uint64_t // existing threads only
+	pti_threads_system    C.uint64_t
+	pti_policy            C.int32_t // default policy for new threads
+	pti_faults            C.int32_t // number of page faults
+	pti_pageins           C.int32_t // number of actual pageins
+	pti_cow_faults        C.int32_t // number of copy-on-write faults
+	pti_messages_sent     C.int32_t // number of messages sent
+	pti_messages_received C.int32_t // number of messages received
+	pti_syscalls_mach     C.int32_t // number of mach system calls
+	pti_syscalls_unix     C.int32_t // number of unix system calls
+	pti_csw               C.int32_t // number of context switches
+	pti_threadnum         C.int32_t // number of threads in the task
+	pti_numrunning        C.int32_t // number of running threads
+	pti_priority          C.int32_t // task priority
 }
 
 func nameOf(pid int) string {
@@ -41,7 +42,7 @@ func nameOf(pid int) string {
 	var result string
 
 	if nameLen > 0 {
-		result = C.GoString(name);
+		result = C.GoString(name)
 	} else {
 		result = ""
 	}
@@ -68,11 +69,11 @@ func listPids() []int {
 		return make([]int, 0)
 	}
 	defer C.free(unsafe.Pointer(pids))
-	pidsCnt := C.proc_listallpids(pids, C.int(cnt * int(unsafe.Sizeof(C.int(0)))))
-	if (pidsCnt <= 0) {
+	pidsCnt := C.proc_listallpids(pids, C.int(cnt*int(unsafe.Sizeof(C.int(0)))))
+	if pidsCnt <= 0 {
 		return make([]int, 0)
 	}
-	casted := (*[1<<20]C.int)(unsafe.Pointer(pids))
+	casted := (*[1 << 20]C.int)(unsafe.Pointer(pids))
 	pidsCopy := make([]int, cnt)
 	for i := 0; i < cnt; i++ {
 		pidsCopy[i] = int(casted[i])
@@ -82,7 +83,7 @@ func listPids() []int {
 
 func propertiesOf(pid int, keys []int) PropertyMap {
 	result := make(PropertyMap)
-	
+
 	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
 	defer C.free(info)
 	actualSize := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, info, C.int(C.PROC_PIDTASKINFO_SIZE)) //C.int(unsafe.Sizeof(info)))
@@ -92,8 +93,8 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 		return result
 	}
 	casted := (*go_proc_taskinfo)(info)
-	
-	for _,key := range keys {
+
+	for _, key := range keys {
 		switch key {
 		case PropertyVMSize:
 			result[PropertyVMSize] = strconv.FormatInt(int64(casted.pti_virtual_size), 10)
@@ -105,7 +106,7 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 
 func trimPidArray(pids []int) []int {
 	index := len(pids)
-	for i,e := range pids {
+	for i, e := range pids {
 		if e <= 0 {
 			index = i
 			break

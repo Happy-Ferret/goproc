@@ -7,10 +7,10 @@ package process
 import (
 	"bufio"
 	"fmt"
-	"os"
-	"strings"
 	"io/ioutil"
+	"os"
 	"strconv"
+	"strings"
 )
 
 const procFsRoot = "/proc"
@@ -27,7 +27,7 @@ func procFsParseStatusItems(status *os.File, keys []string) []string {
 	scanner := bufio.NewScanner(status)
 	for scanner.Scan() {
 		if parts := strings.Split(scanner.Text(), ":"); len(parts) == 2 {
-			if currkey := strings.TrimSpace(parts[0]); strElemIndexOf(currkey, keys) >= 0 { 
+			if currkey := strings.TrimSpace(parts[0]); strElemIndexOf(currkey, keys) >= 0 {
 				values[i] = strings.TrimSpace(parts[1])
 				i++
 			}
@@ -36,7 +36,7 @@ func procFsParseStatusItems(status *os.File, keys []string) []string {
 	//if err := scanner.Err(); err != nil {
 	//}
 
-	return values 
+	return values
 }
 
 func procFsListPids() []int {
@@ -44,11 +44,11 @@ func procFsListPids() []int {
 	if err != nil {
 		return []int{}
 	}
-	
+
 	pids := make([]int, len(items))
 	pids[0] = -1 // mark value
 	i := 0
-	for _,item := range items {
+	for _, item := range items {
 		pid := procFsTryNameToPid(item.Name())
 		if pid > 0 {
 			pids[i] = pid
@@ -64,9 +64,9 @@ func procFsListPids() []int {
 
 func procFsTryNameToPid(name string) int {
 	pid, err := strconv.Atoi(name)
-	if err != nil  || pid <= 0 {
+	if err != nil || pid <= 0 {
 		return -1
 	}
-	
+
 	return pid
 }

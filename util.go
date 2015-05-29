@@ -2,7 +2,7 @@ package process
 
 func strElemIndexOf(searched string, array []string) int {
 	for i, elem := range array {
-		if elem == searched  {
+		if elem == searched {
 			return i
 		}
 	}

@@ -22,11 +22,11 @@ func ListPids() []int {
 
 func PidOf(name string) int {
 	result := -1
-	
-	for _,pid := range ListPids() {
+
+	for _, pid := range ListPids() {
 		nameOfPid := NameOf(pid)
 		if name == nameOfPid {
-			result = pid 
+			result = pid
 			break
 		}
 	}

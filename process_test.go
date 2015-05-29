@@ -10,7 +10,7 @@ import (
 func TestNameOf(t *testing.T) {
 
 	cases := testCasesNameOf()
-	
+
 	for _, c := range cases {
 		got := NameOf(c.in)
 		if got != c.want {
@@ -21,7 +21,7 @@ func TestNameOf(t *testing.T) {
 
 func TestCount(t *testing.T) {
 	want := true
-	got := Count();
+	got := Count()
 	if got > 0 != want {
 		t.Errorf("(Count() == %d) > 0 == %t, want %t", got, got > 0, want)
 	} else {
@@ -32,10 +32,10 @@ func TestCount(t *testing.T) {
 func TestListPids(t *testing.T) {
 	want := true
 	got := ListPids()
-	if (len(got) > 0 != want) {
+	if len(got) > 0 != want {
 		t.Errorf("(len(ListPids()) == %d) > 0 == %t, want %t", len(got), len(got) > 0, want)
 	} else {
-		for _,pid := range got {
+		for _, pid := range got {
 			fmt.Printf("%d ", pid)
 		}
 		fmt.Printf("\n")
@@ -45,7 +45,7 @@ func TestListPids(t *testing.T) {
 func TestPidOf(t *testing.T) {
 
 	cases := testCasesPidOf()
-	
+
 	for _, c := range cases {
 		got := PidOf(c.in)
 		if got != c.want {
@@ -58,7 +58,7 @@ func TestPropertiesOf(t *testing.T) {
 	//want := make(PropertyMap)
 	//want[PropertyVMSize] = ""
 	got := propertiesOf(38, []int{PropertyVMSize}) //syslogd on Darwin
-	if (len(got) > 0) {
+	if len(got) > 0 {
 		fmt.Printf("VMSize: %s\n", got[PropertyVMSize])
 	} else {
 		t.Errorf("private [darwin only] propertiesOf() failed")

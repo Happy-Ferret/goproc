@@ -3,13 +3,14 @@
 package process
 
 func testCasesNameOf() []struct {
-	in int
-	want string} {
+	in   int
+	want string
+} {
 
 	cases := []struct {
-		in int
+		in   int
 		want string
-	} {
+	}{
 		{1, "init"},
 		{562, "sshd"},
 	}
@@ -18,13 +19,14 @@ func testCasesNameOf() []struct {
 }
 
 func testCasesPidOf() []struct {
-	in string
-	want int} {
+	in   string
+	want int
+} {
 
 	cases := []struct {
-		in string
+		in   string
 		want int
-	} {
+	}{
 		{"init", 1},
 		{"sshd", 562},
 	}
