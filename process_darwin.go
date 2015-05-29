@@ -12,7 +12,7 @@ import "strings"
 import "strconv"
 
 //import "fmt"
-
+/*
 type go_proc_taskinfo struct { // same as sys/proc_info.h/proc_taskinfo
 	pti_virtual_size      C.uint64_t // virtual memory size (bytes)
 	pti_resident_size     C.uint64_t // resident memory size (bytes)
@@ -33,6 +33,7 @@ type go_proc_taskinfo struct { // same as sys/proc_info.h/proc_taskinfo
 	pti_numrunning        C.int32_t // number of running threads
 	pti_priority          C.int32_t // task priority
 }
+*/
 
 func nameOf(pid int) string {
 	name := C.CString(strings.Repeat("\x00", 1024))
@@ -92,7 +93,7 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 		//panic(fmt.Sprintf("actualsize=%d\n, sizeof(info)=%d", int(actualSize), int(C.int(unsafe.Sizeof(info))))) //DEBUG
 		return result
 	}
-	casted := (*go_proc_taskinfo)(info)
+	casted := (*C.struct_proc_taskinfo)(info)
 
 	for _, key := range keys {
 		switch key {
