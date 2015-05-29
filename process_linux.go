@@ -21,3 +21,7 @@ func count() int {
 func listPids() []int {
 	return procFsListPids()
 }
+
+func propertiesOf(pid int, keys []int) PropertyMap {
+	panic("propertiesOf() for Linux not implemented")
+}
