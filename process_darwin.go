@@ -65,23 +65,33 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 	for _, key := range keys {
 		switch key {
 		case VMUsage:
-			result[VMUsage] = int64(taskInfo.pti_virtual_size) // bytes
+			result[VMUsage] = taskInfo.virtualSize
 		}
 	}
 	return result
 }
 
-func procTaskInfoOf(pid int) *C.struct_proc_taskinfo {	
+// garbage collectable type of interesting C.struct_proc_taskinfo fields
+type procTaskInfo struct {
+	virtualSize int64
+}
+
+func procTaskInfoOf(pid int) *procTaskInfo {
+	result := new(procTaskInfo)	
+	
 	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
 	defer C.free(info)
 	actualSize := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, info, C.int(C.PROC_PIDTASKINFO_SIZE))
 	
 	// checking size as described in http://goo.gl/Lta0IO
 	if actualSize < C.int(unsafe.Sizeof(info)) {
-		return nil
+		return result
 	}
+	
+	casted := (*C.struct_proc_taskinfo)(info)
+	result.virtualSize = int64(casted.pti_virtual_size) // bytes
 
-	return (*C.struct_proc_taskinfo)(info)
+	return result
 }
 
 func trimPidArray(pids []int) []int {
