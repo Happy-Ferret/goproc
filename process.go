@@ -6,6 +6,8 @@ const (
 	PropertyVMSize = iota
 )
 
+type PropertyMap map[int]string
+
 func NameOf(pid int) string {
 	return nameOf(pid)
 }
@@ -30,4 +32,8 @@ func PidOf(name string) int {
 	}
 
 	return result
+}
+
+func PropertiesOf(pid int, keys []int) PropertyMap {
+	return propertiesOf(pid, keys)
 }

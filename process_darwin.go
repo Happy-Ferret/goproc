@@ -80,8 +80,8 @@ func listPids() []int {
 	return trimPidArray(pidsCopy)
 }
 
-func propertiesOf(pid int, keys []int) map[int]string {
-	result := make(map[int]string)
+func propertiesOf(pid int, keys []int) PropertyMap {
+	result := make(PropertyMap)
 	
 	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
 	defer C.free(info)

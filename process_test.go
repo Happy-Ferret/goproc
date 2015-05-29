@@ -55,10 +55,9 @@ func TestPidOf(t *testing.T) {
 }
 
 func TestPropertiesOf(t *testing.T) {
-	//want := make(map[int]string)
+	//want := make(PropertyMap)
 	//want[PropertyVMSize] = ""
-	
-	got := propertiesOf(1, []int{PropertyVMSize})
+	got := propertiesOf(38, []int{PropertyVMSize}) //syslogd on Darwin
 	if (len(got) > 0) {
 		fmt.Printf("VMSize: %s\n", got[PropertyVMSize])
 	} else {
