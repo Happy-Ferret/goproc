@@ -8,7 +8,7 @@ func nameOf(pid int) string {
 	statusFile, err := procFsOpenPid(pid, "status")
 	if err == nil {
 		defer statusFile.Close()
-		procName = procFsParseProcName(statusFile)
+		procName = procFsParseStatusItems(statusFile, []string{"Name"})[0]
 	}
 	
 	return procName

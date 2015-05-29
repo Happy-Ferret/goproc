@@ -20,19 +20,23 @@ func procFsOpenPid(pid int, name string) (*os.File, error) {
 	return os.Open(fmt.Sprintf(procFsPidPath, pid, name))
 }
 
-func procFsParseProcName(status *os.File) string {
-	procName := ""
+func procFsParseStatusItems(status *os.File, keys []string) []string {
+	values := make([]string, len(keys))
+	i := 0
 
 	scanner := bufio.NewScanner(status)
-	if scanner.Scan() {
+	for scanner.Scan() {
 		if parts := strings.Split(scanner.Text(), ":"); len(parts) == 2 {
-			procName = strings.TrimSpace(parts[1])
+			if currkey := strings.TrimSpace(parts[0]); strElemIndexOf(currkey, keys) >= 0 { 
+				values[i] = strings.TrimSpace(parts[1])
+				i++
+			}
 		}
 	}
 	//if err := scanner.Err(); err != nil {
 	//}
 
-	return procName
+	return values 
 }
 
 func procFsListPids() []int {
