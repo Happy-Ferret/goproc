@@ -59,6 +59,9 @@ func TestPropertiesOf(t *testing.T) {
 	//want[PropertyVMSize] = ""
 	
 	got := propertiesOf(1, []int{PropertyVMSize})
-	
-	fmt.Printf("VMSize: %s\n", got[PropertyVMSize])
+	if (len(got) > 0) {
+		fmt.Printf("VMSize: %s\n", got[PropertyVMSize])
+	} else {
+		t.Errorf("private [darwin only] propertiesOf() failed")
+	}
 }

@@ -82,12 +82,6 @@ func listPids() []int {
 
 func propertiesOf(pid int, keys []int) map[int]string {
 	result := make(map[int]string)
-
-	//size := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, nil, 0)
-	//if size <= 0 {
-	//	panic(fmt.Sprintf("size=%d\n", size)) //DEBUG
-	//	return result
-	//}
 	
 	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
 	defer C.free(info)
@@ -102,7 +96,7 @@ func propertiesOf(pid int, keys []int) map[int]string {
 	for _,key := range keys {
 		switch key {
 		case PropertyVMSize:
-			result[PropertyVMSize] = strconv.Itoa(int(casted.pti_virtual_size))
+			result[PropertyVMSize] = strconv.FormatInt(int64(casted.pti_virtual_size), 10)
 		}
 	}
 
