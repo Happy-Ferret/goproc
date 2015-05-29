@@ -2,6 +2,10 @@
 
 package process
 
+const (
+	PropertyVMSize = iota
+)
+
 func NameOf(pid int) string {
 	return nameOf(pid)
 }
