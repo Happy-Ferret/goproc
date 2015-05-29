@@ -3,7 +3,7 @@
 package process
 
 const (
-	PropertyVMSize = iota
+	VMUsage = iota
 )
 
 type PropertyMap map[int]interface{}

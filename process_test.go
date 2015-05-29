@@ -55,11 +55,9 @@ func TestPidOf(t *testing.T) {
 }
 
 func TestPropertiesOf(t *testing.T) {
-	//want := make(PropertyMap)
-	//want[PropertyVMSize] = ""
-	got := propertiesOf(38, []int{PropertyVMSize}) //syslogd on Darwin
+	got := propertiesOf(38, []int{VMUsage}) //syslogd on Darwin
 	if len(got) > 0 {
-		fmt.Printf("VMSize: %d\n", got[PropertyVMSize])
+		fmt.Printf("VMUsage: %d\n", got[VMUsage])
 	} else {
 		t.Errorf("private [darwin only] propertiesOf() failed")
 	}

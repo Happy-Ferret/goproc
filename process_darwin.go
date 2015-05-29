@@ -61,25 +61,27 @@ func listPids() []int {
 
 func propertiesOf(pid int, keys []int) PropertyMap {
 	result := make(PropertyMap)
-
-	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
-	defer C.free(info)
-	actualSize := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, info, C.int(C.PROC_PIDTASKINFO_SIZE)) //C.int(unsafe.Sizeof(info)))
-	// checking size as described in http://goo.gl/Lta0IO
-	if actualSize < C.int(unsafe.Sizeof(info)) {
-		//panic(fmt.Sprintf("actualsize=%d\n, sizeof(info)=%d", int(actualSize), int(C.int(unsafe.Sizeof(info))))) //DEBUG
-		return result
-	}
-	casted := (*C.struct_proc_taskinfo)(info)
-
+	taskInfo := procTaskInfoOf(pid)
 	for _, key := range keys {
 		switch key {
-		case PropertyVMSize:
-			result[PropertyVMSize] = int64(casted.pti_virtual_size)
+		case VMUsage:
+			result[VMUsage] = int64(taskInfo.pti_virtual_size) // bytes
 		}
 	}
-
 	return result
+}
+
+func procTaskInfoOf(pid int) *C.struct_proc_taskinfo {	
+	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
+	defer C.free(info)
+	actualSize := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, info, C.int(C.PROC_PIDTASKINFO_SIZE))
+	
+	// checking size as described in http://goo.gl/Lta0IO
+	if actualSize < C.int(unsafe.Sizeof(info)) {
+		return nil
+	}
+
+	return (*C.struct_proc_taskinfo)(info)
 }
 
 func trimPidArray(pids []int) []int {
