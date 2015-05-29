@@ -17,3 +17,9 @@ func main() {
   pids := process.ListPids() // result: []int array with running pids
 }
 ```
+
+## Tests
+Depending on function (``process.NameOf()`` for example) and platform type you may need run as root.
+```sh
+sudo go test
+```
