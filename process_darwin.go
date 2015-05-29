@@ -10,30 +10,7 @@ import "C"
 import "unsafe"
 import "strings"
 import "strconv"
-
 //import "fmt"
-/*
-type go_proc_taskinfo struct { // same as sys/proc_info.h/proc_taskinfo
-	pti_virtual_size      C.uint64_t // virtual memory size (bytes)
-	pti_resident_size     C.uint64_t // resident memory size (bytes)
-	pti_total_user        C.uint64_t // total time
-	pti_total_system      C.uint64_t
-	pti_threads_user      C.uint64_t // existing threads only
-	pti_threads_system    C.uint64_t
-	pti_policy            C.int32_t // default policy for new threads
-	pti_faults            C.int32_t // number of page faults
-	pti_pageins           C.int32_t // number of actual pageins
-	pti_cow_faults        C.int32_t // number of copy-on-write faults
-	pti_messages_sent     C.int32_t // number of messages sent
-	pti_messages_received C.int32_t // number of messages received
-	pti_syscalls_mach     C.int32_t // number of mach system calls
-	pti_syscalls_unix     C.int32_t // number of unix system calls
-	pti_csw               C.int32_t // number of context switches
-	pti_threadnum         C.int32_t // number of threads in the task
-	pti_numrunning        C.int32_t // number of running threads
-	pti_priority          C.int32_t // task priority
-}
-*/
 
 func nameOf(pid int) string {
 	name := C.CString(strings.Repeat("\x00", 1024))
