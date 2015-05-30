@@ -65,13 +65,6 @@ type processInfo struct {
 	virtualSize int64
 }
 
-// as in https://gist.github.com/gotohr/7005197
-type processInfoHandler func (info *processInfo) *processInfo
-
-func (f processInfoHandler) compose(inner processInfoHandler) processInfoHandler {
-	return func(info *processInfo) *processInfo { return f(inner(info)) }
-}
-
 func propertiesOf(pid int, keys []int) PropertyMap {
 	result := make(PropertyMap)
 	var thread processInfoHandler = threadInfoHandler
@@ -85,6 +78,13 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 		}
 	}
 	return result
+}
+
+// as in https://gist.github.com/gotohr/7005197
+type processInfoHandler func (info *processInfo) *processInfo
+
+func (f processInfoHandler) compose(inner processInfoHandler) processInfoHandler {
+	return func(info *processInfo) *processInfo { return f(inner(info)) }
 }
 
 func processInfoOf(pid int, handler processInfoHandler) *processInfo {
