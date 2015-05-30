@@ -59,9 +59,25 @@ func listPids() []int {
 	return trimPidArray(pidsCopy)
 }
 
+// garbage collectable type of interesting C.struct_proc_taskinfo fields
+type processInfo struct {
+	pid int
+	virtualSize int64
+}
+
+// as in https://gist.github.com/gotohr/7005197
+type processInfoHandler func (info *processInfo) *processInfo
+
+func (f processInfoHandler) compose(inner processInfoHandler) processInfoHandler {
+	return func(info *processInfo) *processInfo { return f(inner(info)) }
+}
+
 func propertiesOf(pid int, keys []int) PropertyMap {
 	result := make(PropertyMap)
-	taskInfo := procTaskInfoOf(pid)
+	var thread processInfoHandler = threadInfoHandler
+	var task processInfoHandler = taskInfoHandler
+	chain := thread.compose(task) 
+	taskInfo := processInfoOf(pid, chain)
 	for _, key := range keys {
 		switch key {
 		case VMUsage:
@@ -71,27 +87,32 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 	return result
 }
 
-// garbage collectable type of interesting C.struct_proc_taskinfo fields
-type procTaskInfo struct {
-	virtualSize int64
+func processInfoOf(pid int, handler processInfoHandler) *processInfo {
+	info := new(processInfo)
+	info.pid = pid
+	handler(info)
+	return handler(info)
 }
 
-func procTaskInfoOf(pid int) *procTaskInfo {
-	result := new(procTaskInfo)	
-	
-	info := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
-	defer C.free(info)
-	actualSize := C.proc_pidinfo(C.int(pid), C.PROC_PIDTASKINFO, 0, info, C.int(C.PROC_PIDTASKINFO_SIZE))
+func threadInfoHandler(info *processInfo) *processInfo {
+	// just a stub, TODO: complete
+	return info
+}
+
+func taskInfoHandler(info *processInfo) *processInfo {
+	taskInfo := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
+	defer C.free(taskInfo)
+	size := C.proc_pidinfo(C.int(info.pid), C.PROC_PIDTASKINFO, 0, taskInfo, C.int(C.PROC_PIDTASKINFO_SIZE))
 	
 	// checking size as described in http://goo.gl/Lta0IO
-	if actualSize < C.int(unsafe.Sizeof(info)) {
-		return result
+	if size < C.int(unsafe.Sizeof(taskInfo)) {
+		return info
 	}
 	
-	casted := (*C.struct_proc_taskinfo)(info)
-	result.virtualSize = int64(casted.pti_virtual_size) // bytes
+	casted := (*C.struct_proc_taskinfo)(taskInfo)
+	info.virtualSize = int64(casted.pti_virtual_size) // bytes
 
-	return result
+	return info
 }
 
 func trimPidArray(pids []int) []int {
