@@ -9,6 +9,7 @@ package process
 import "C"
 import "unsafe"
 import "strings"
+//import "time"
 //import "strconv"
 //import "fmt"
 
@@ -63,10 +64,11 @@ func listPids() []int {
 type processInfo struct {
 	pid int
 	virtualSize int64
-	threadUserTime int64	// live time
-	threadSystemTime int64	// live time
-	taskUserTime int64		// terminated time
-	taskSystemTime int64	// terminated time
+	//threadUserTime int64	// live time (unix time)
+	//threadSystemTime int64	// live time (unix time)
+	//taskUserTime int64		// terminated time (unix time)
+	//taskSystemTime int64	// terminated time (unix time)
+	cpuUsage int32
 }
 
 func propertiesOf(pid int, keys []int) PropertyMap {
@@ -79,6 +81,8 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 		switch key {
 		case VmUsage:
 			result[VmUsage] = taskInfo.virtualSize
+		case CpuUsage:
+			result[CpuUsage] = taskInfo.cpuUsage
 		}
 	}
 	return result
@@ -108,8 +112,9 @@ func threadInfoHandler(info *processInfo) *processInfo {
 	}
 	
 	casted := (*C.struct_proc_threadinfo)(taskInfo)
-	info.threadUserTime = int64(casted.pth_user_time) // nanoseconds
-	info.threadSystemTime = int64(casted.pth_system_time) // nanoseconds
+	//info.threadUserTime = int64(casted.pth_user_time) // nanoseconds
+	//info.threadSystemTime = int64(casted.pth_system_time) // nanoseconds
+	info.cpuUsage = int32(casted.pth_cpu_usage) // percent
 
 	return info
 }
@@ -126,11 +131,32 @@ func taskInfoHandler(info *processInfo) *processInfo {
 	
 	casted := (*C.struct_proc_taskinfo)(taskInfo)
 	info.virtualSize = int64(casted.pti_virtual_size) // bytes
-	info.taskUserTime = int64(casted.pti_total_user) // nanoseconds
-	info.taskSystemTime = int64(casted.pti_total_system) // nanoseconds
+	//info.taskUserTime = int64(casted.pti_total_user) // nanoseconds
+	//info.taskSystemTime = int64(casted.pti_total_system) // nanoseconds
 
 	return info
 }
+
+/*
+func CalcCpuUsage(info processInfo) int {	
+	userTime := time.Unix(0, info.threadUserTime)
+	systTime := time.Unix(0, info.threadSystemTime)
+	taskTime := userTime.Add(time.Since(systTime))
+	userTime = time.Unix(0, info.taskUserTime)
+	systTime = time.Unix(0, info.taskSystemTime)
+	taskTime = userTime.Add(time.Since(taskTime))
+	taskTime = taskTime.Add(time.Since(systTime))
+	delta := time.Now().Sub(taskTime)
+	return 0
+}*/
+
+/*
+func nanosecsToTimeVal() *struct_timeval {
+	timeval := C.malloc(C.size_t(10))
+	defer C.free(timeval)
+	
+	return timeval
+}*/
 
 func trimPidArray(pids []int) []int {
 	index := len(pids)

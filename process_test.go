@@ -36,7 +36,9 @@ func TestListPids(t *testing.T) {
 		t.Errorf("(len(ListPids()) == %d) > 0 == %t, want %t", len(got), len(got) > 0, want)
 	} else {
 		for _, pid := range got {
+			//props := propertiesOf(63156, []int{CpuUsage})
 			fmt.Printf("%d ", pid)
+			//fmt.Printf("[%d, cpu:%v]\n", pid, props[CpuUsage])
 		}
 		fmt.Printf("\n")
 	}
@@ -55,9 +57,9 @@ func TestPidOf(t *testing.T) {
 }
 
 func TestPropertiesOf(t *testing.T) {
-	got := propertiesOf(38, []int{VmUsage}) //syslogd on Darwin
+	got := propertiesOf(63156, []int{VmUsage,CpuUsage}) // Google Chrome Helper on my Mac now
 	if len(got) > 0 {
-		fmt.Printf("VmUsage: %d\n", got[VmUsage])
+		fmt.Printf("VmUsage: [%v] CpuUsage: [%v]\n", got[VmUsage], got[CpuUsage])
 	} else {
 		t.Errorf("private [darwin only] propertiesOf() failed")
 	}
