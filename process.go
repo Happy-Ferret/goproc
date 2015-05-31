@@ -3,7 +3,8 @@
 package process
 
 const (
-	VMUsage = iota
+	VmUsage = iota
+	CpuUsage
 )
 
 type PropertyMap map[int]interface{}

@@ -55,9 +55,9 @@ func TestPidOf(t *testing.T) {
 }
 
 func TestPropertiesOf(t *testing.T) {
-	got := propertiesOf(38, []int{VMUsage}) //syslogd on Darwin
+	got := propertiesOf(38, []int{VmUsage}) //syslogd on Darwin
 	if len(got) > 0 {
-		fmt.Printf("VMUsage: %d\n", got[VMUsage])
+		fmt.Printf("VmUsage: %d\n", got[VmUsage])
 	} else {
 		t.Errorf("private [darwin only] propertiesOf() failed")
 	}

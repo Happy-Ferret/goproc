@@ -77,8 +77,8 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 	taskInfo := processInfoOf(pid, chain)
 	for _, key := range keys {
 		switch key {
-		case VMUsage:
-			result[VMUsage] = taskInfo.virtualSize
+		case VmUsage:
+			result[VmUsage] = taskInfo.virtualSize
 		}
 	}
 	return result
@@ -108,8 +108,8 @@ func threadInfoHandler(info *processInfo) *processInfo {
 	}
 	
 	casted := (*C.struct_proc_threadinfo)(taskInfo)
-	info.threadUserTime = int64(casted.pth_user_time)
-	info.threadSystemTime = int64(casted.pth_system_time)
+	info.threadUserTime = int64(casted.pth_user_time) // nanoseconds
+	info.threadSystemTime = int64(casted.pth_system_time) // nanoseconds
 
 	return info
 }
@@ -126,8 +126,8 @@ func taskInfoHandler(info *processInfo) *processInfo {
 	
 	casted := (*C.struct_proc_taskinfo)(taskInfo)
 	info.virtualSize = int64(casted.pti_virtual_size) // bytes
-	info.taskUserTime = int64(casted.pti_total_user)
-	info.taskSystemTime = int64(casted.pti_total_system)	
+	info.taskUserTime = int64(casted.pti_total_user) // nanoseconds
+	info.taskSystemTime = int64(casted.pti_total_system) // nanoseconds
 
 	return info
 }
