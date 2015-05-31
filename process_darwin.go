@@ -63,6 +63,10 @@ func listPids() []int {
 type processInfo struct {
 	pid int
 	virtualSize int64
+	threadUserTime int64	// live time
+	threadSystemTime int64	// live time
+	taskUserTime int64		// terminated time
+	taskSystemTime int64	// terminated time
 }
 
 func propertiesOf(pid int, keys []int) PropertyMap {
@@ -95,7 +99,18 @@ func processInfoOf(pid int, handler processInfoHandler) *processInfo {
 }
 
 func threadInfoHandler(info *processInfo) *processInfo {
-	// just a stub, TODO: complete
+	taskInfo := C.malloc(C.size_t(C.PROC_PIDTHREADINFO_SIZE))
+	defer C.free(taskInfo)
+	size := C.proc_pidinfo(C.int(info.pid), C.PROC_PIDTHREADINFO, 0, taskInfo, C.int(C.PROC_PIDTHREADINFO_SIZE))
+	
+	if size < C.int(unsafe.Sizeof(taskInfo)) {
+		return info
+	}
+	
+	casted := (*C.struct_proc_threadinfo)(taskInfo)
+	info.threadUserTime = int64(casted.pth_user_time)
+	info.threadSystemTime = int64(casted.pth_system_time)
+
 	return info
 }
 
@@ -111,6 +126,8 @@ func taskInfoHandler(info *processInfo) *processInfo {
 	
 	casted := (*C.struct_proc_taskinfo)(taskInfo)
 	info.virtualSize = int64(casted.pti_virtual_size) // bytes
+	info.taskUserTime = int64(casted.pti_total_user)
+	info.taskSystemTime = int64(casted.pti_total_system)	
 
 	return info
 }
