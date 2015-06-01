@@ -19,9 +19,16 @@ func listPids() []int {
 }
 
 func propertiesOf(pid int, keys []int) PropertyMap {
-	//panic("propertiesOf() for Linux not implemented")
-	fake := make(PropertyMap)
-	fake[VmUsage] = -1000
-	fake[CpuUsage] = -1000
-	return fake
+	result := make(PropertyMap)
+
+	for _,key := range keys {
+		switch key {
+		case VmUsage:
+			result[VmUsage] = -1000
+		case CpuUsage:
+			result[CpuUsage] = -1000
+		}
+	}
+
+	return result
 }
