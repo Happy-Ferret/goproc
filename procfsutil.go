@@ -15,9 +15,14 @@ import (
 
 const procFsRoot = "/proc"
 const procFsPidPath = "/proc/%d/%s"
+const procFsPath = "/proc/%s"
 
 func procFsOpenPid(pid int, name string) (*os.File, error) {
 	return os.Open(fmt.Sprintf(procFsPidPath, pid, name))
+}
+
+func procFsOpen(name string) (*os.File, error) {
+	return os.Open(fmt.Sprintf(procFsPath, name))
 }
 
 func procFsParseStatusItems(status *os.File, keys []string) []string {
@@ -60,6 +65,34 @@ func procFsListPids() []int {
 		return pids[0:i]
 	}
 	return []int{}
+}
+
+func procFsCpuTimeTotal() int {
+	stat, err := procFsOpen("stat")
+	if err != nil {
+		return -1
+	}
+	defer stat.Close()
+	scanner := bufio.NewScanner(stat)
+	if !scanner.Scan() {
+		return -1
+	}
+	parts := strings.Fields(scanner.Text())
+	if len(parts) < 2 {
+		return -1
+	}
+        if strings.TrimSpace(parts[0]) != "cpu" {
+		return -1
+	}
+	total := 0
+	for _,cpuTime := range parts[1:] {
+		partial, err := strconv.Atoi(cpuTime)
+		if err != nil {
+			return -1
+		}
+		total += partial
+	}
+	return total
 }
 
 func procFsTryNameToPid(name string) int {

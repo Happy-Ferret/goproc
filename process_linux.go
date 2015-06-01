@@ -23,5 +23,6 @@ func listPids() []int {
 }
 
 func propertiesOf(pid int, keys []int) PropertyMap {
-	panic("propertiesOf() for Linux not implemented")
+	//panic("propertiesOf() for Linux not implemented")
+	return make(PropertyMap)
 }
