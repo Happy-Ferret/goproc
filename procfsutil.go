@@ -26,8 +26,8 @@ func procFsOpen(name string) (*os.File, error) {
 }
 
 func procFsParseStatusItems(pid int, keys []string) []string {
-  // TODO: change this using only /proc/pid/stat -> struct
-  status, err := procFsOpenPid(pid, "status")
+	// TODO: change this using only /proc/pid/stat -> struct
+	status, err := procFsOpenPid(pid, "status")
 	if err != nil {
 		return make([]string, 0)
 	}
@@ -88,11 +88,11 @@ func procFsCpuTimeTotal() int {
 	if len(parts) < 2 {
 		return -1
 	}
-        if strings.TrimSpace(parts[0]) != "cpu" {
+	if strings.TrimSpace(parts[0]) != "cpu" {
 		return -1
 	}
 	total := 0
-	for _,cpuTime := range parts[1:] {
+	for _, cpuTime := range parts[1:] {
 		partial := AtoiOr(cpuTime, -1)
 		if partial < 0 {
 			return -1
@@ -132,4 +132,3 @@ func procFsTryNameToPid(name string) int {
 
 	return pid
 }
-

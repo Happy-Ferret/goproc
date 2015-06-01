@@ -20,9 +20,9 @@ func TestProcFsCpuTimeTotal(t *testing.T) {
 
 func TestProcFsJiffiesOf(t *testing.T) {
 	utimeGot, stimeGot := procFsJiffiesOf(1)
-	if utimeGot < 0 || stimeGot <0 {
+	if utimeGot < 0 || stimeGot < 0 {
 		t.Errorf("utime,stime => procFsJiffiesOf() > 0 == false, want true")
 	} else {
 		fmt.Printf("utime,stime => procFsJiffiesOfl() == %v, %v\n", utimeGot, stimeGot)
-	} 
+	}
 }

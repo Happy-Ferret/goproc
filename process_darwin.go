@@ -59,7 +59,7 @@ func listPids() []int {
 
 // garbage collectable type of interesting C.struct_proc_taskinfo fields
 type processInfo struct {
-	pid int
+	pid         int
 	virtualSize int64
 	//threadUserTime int64	// live time (unix time)
 	//threadSystemTime int64	// live time (unix time)
@@ -72,7 +72,7 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 	result := make(PropertyMap)
 	var thread processInfoHandler = threadInfoHandler
 	var task processInfoHandler = taskInfoHandler
-	chain := thread.compose(task) 
+	chain := thread.compose(task)
 	taskInfo := processInfoOf(pid, chain)
 	for _, key := range keys {
 		switch key {
@@ -86,7 +86,7 @@ func propertiesOf(pid int, keys []int) PropertyMap {
 }
 
 // as in https://gist.github.com/gotohr/7005197
-type processInfoHandler func (info *processInfo) *processInfo
+type processInfoHandler func(info *processInfo) *processInfo
 
 func (f processInfoHandler) compose(inner processInfoHandler) processInfoHandler {
 	return func(info *processInfo) *processInfo { return f(inner(info)) }
@@ -103,11 +103,11 @@ func threadInfoHandler(info *processInfo) *processInfo {
 	taskInfo := C.malloc(C.size_t(C.PROC_PIDTHREADINFO_SIZE))
 	defer C.free(taskInfo)
 	size := C.proc_pidinfo(C.int(info.pid), C.PROC_PIDTHREADINFO, 0, taskInfo, C.int(C.PROC_PIDTHREADINFO_SIZE))
-	
+
 	if size < C.int(unsafe.Sizeof(taskInfo)) {
 		return info
 	}
-	
+
 	casted := (*C.struct_proc_threadinfo)(taskInfo)
 	//info.threadUserTime = int64(casted.pth_user_time) // nanoseconds
 	//info.threadSystemTime = int64(casted.pth_system_time) // nanoseconds
@@ -120,12 +120,12 @@ func taskInfoHandler(info *processInfo) *processInfo {
 	taskInfo := C.malloc(C.size_t(C.PROC_PIDTASKINFO_SIZE))
 	defer C.free(taskInfo)
 	size := C.proc_pidinfo(C.int(info.pid), C.PROC_PIDTASKINFO, 0, taskInfo, C.int(C.PROC_PIDTASKINFO_SIZE))
-	
+
 	// checking size as described in http://goo.gl/Lta0IO
 	if size < C.int(unsafe.Sizeof(taskInfo)) {
 		return info
 	}
-	
+
 	casted := (*C.struct_proc_taskinfo)(taskInfo)
 	info.virtualSize = int64(casted.pti_virtual_size) // bytes
 	//info.taskUserTime = int64(casted.pti_total_user) // nanoseconds

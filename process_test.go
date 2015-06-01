@@ -57,7 +57,7 @@ func TestPidOf(t *testing.T) {
 }
 
 func TestPropertiesOf(t *testing.T) {
-	got := propertiesOf(1, []int{VmUsage,CpuUsage})
+	got := propertiesOf(1, []int{VmUsage, CpuUsage})
 	if len(got) > 0 {
 		fmt.Printf("VmUsage: [%v] CpuUsage: [%v]\n", got[VmUsage], got[CpuUsage])
 	} else {
