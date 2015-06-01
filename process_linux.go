@@ -2,6 +2,9 @@
 
 package process
 
+import "strings"
+import "fmt"
+
 func nameOf(pid int) string {
  	items := procFsParseStatusItems(pid, []string{"Name"})
 	if len(items) != 1 {
@@ -21,10 +24,19 @@ func listPids() []int {
 func propertiesOf(pid int, keys []int) PropertyMap {
 	result := make(PropertyMap)
 
-	for _,key := range keys {
+  for _,key := range keys {
 		switch key {
 		case VmUsage:
-			result[VmUsage] = -1000
+      items := procFsParseStatusItems(pid, []string{"VmSize"})
+      if len(items) == 1 {
+        vmUsage := AtoiOr(strings.Fields(strings.TrimSpace(items[0]))[0], -1) // bytes
+        if vmUsage > 0 {
+          result[VmUsage] = vmUsage * 1000 // bytes
+          break
+        }
+      }
+			result[VmUsage] = -1
+
 		case CpuUsage:
 			result[CpuUsage] = -1000
 		}

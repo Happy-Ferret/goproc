@@ -26,12 +26,13 @@ func procFsOpen(name string) (*os.File, error) {
 }
 
 func procFsParseStatusItems(pid int, keys []string) []string {
-	status, err := procFsOpenPid(pid, "status")
+  // TODO: change this using only /proc/pid/stat -> struct
+  status, err := procFsOpenPid(pid, "status")
 	if err != nil {
 		return make([]string, 0)
 	}
 	defer status.Close()
-	
+
 	values := make([]string, len(keys))
 	i := 0
 
