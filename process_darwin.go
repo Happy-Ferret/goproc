@@ -9,9 +9,6 @@ package process
 import "C"
 import "unsafe"
 import "strings"
-//import "time"
-//import "strconv"
-//import "fmt"
 
 func nameOf(pid int) string {
 	name := C.CString(strings.Repeat("\x00", 1024))
@@ -136,27 +133,6 @@ func taskInfoHandler(info *processInfo) *processInfo {
 
 	return info
 }
-
-/*
-func CalcCpuUsage(info processInfo) int {	
-	userTime := time.Unix(0, info.threadUserTime)
-	systTime := time.Unix(0, info.threadSystemTime)
-	taskTime := userTime.Add(time.Since(systTime))
-	userTime = time.Unix(0, info.taskUserTime)
-	systTime = time.Unix(0, info.taskSystemTime)
-	taskTime = userTime.Add(time.Since(taskTime))
-	taskTime = taskTime.Add(time.Since(systTime))
-	delta := time.Now().Sub(taskTime)
-	return 0
-}*/
-
-/*
-func nanosecsToTimeVal() *struct_timeval {
-	timeval := C.malloc(C.size_t(10))
-	defer C.free(timeval)
-	
-	return timeval
-}*/
 
 func trimPidArray(pids []int) []int {
 	index := len(pids)

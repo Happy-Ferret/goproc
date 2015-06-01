@@ -3,15 +3,11 @@
 package process
 
 func nameOf(pid int) string {
-	procName := ""
-
-	statusFile, err := procFsOpenPid(pid, "status")
-	if err == nil {
-		defer statusFile.Close()
-		procName = procFsParseStatusItems(statusFile, []string{"Name"})[0]
+ 	items := procFsParseStatusItems(pid, []string{"Name"})
+	if len(items) != 1 {
+		return ""
 	}
-
-	return procName
+	return items[0]
 }
 
 func count() int {
@@ -24,5 +20,8 @@ func listPids() []int {
 
 func propertiesOf(pid int, keys []int) PropertyMap {
 	//panic("propertiesOf() for Linux not implemented")
-	return make(PropertyMap)
+	fake := make(PropertyMap)
+	fake[VmUsage] = -1000
+	fake[CpuUsage] = -1000
+	return fake
 }

@@ -25,7 +25,13 @@ func procFsOpen(name string) (*os.File, error) {
 	return os.Open(fmt.Sprintf(procFsPath, name))
 }
 
-func procFsParseStatusItems(status *os.File, keys []string) []string {
+func procFsParseStatusItems(pid int, keys []string) []string {
+	status, err := procFsOpenPid(pid, "status")
+	if err != nil {
+		return make([]string, 0)
+	}
+	defer status.Close()
+	
 	values := make([]string, len(keys))
 	i := 0
 
@@ -86,8 +92,8 @@ func procFsCpuTimeTotal() int {
 	}
 	total := 0
 	for _,cpuTime := range parts[1:] {
-		partial, err := strconv.Atoi(cpuTime)
-		if err != nil {
+		partial := AtoiOr(cpuTime, -1)
+		if partial < 0 {
 			return -1
 		}
 		total += partial
@@ -126,10 +132,3 @@ func procFsTryNameToPid(name string) int {
 	return pid
 }
 
-func AtoiOr(s string, alt int) int {
-	value, err := strconv.Atoi(s)
-	if err == nil {
-		return value
-	}
-	return alt
-}
