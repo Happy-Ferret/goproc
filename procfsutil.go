@@ -68,8 +68,6 @@ func procFsParseStatusItems(pid int, keys []string) []string {
 			}
 		}
 	}
-	//if err := scanner.Err(); err != nil {
-	//}
 
 	return values
 }
@@ -124,30 +122,6 @@ func procFsCpuTimeTotal() int {
 	}
 	return total
 }
-
-/*
-func procFsJiffiesOf(pid int) (int, int) {
-	stat, err := procFsOpenPid(pid, "stat")
-	defer stat.Close()
-	if err != nil {
-		return -1, -1
-	}
-	scanner := bufio.NewScanner(stat)
-	if !scanner.Scan() {
-		return -1, -1
-	}
-	parts := strings.Fields(scanner.Text())
-	if len(parts) < 17 {
-		return -1, -1
-	}
-	utime := AtoiOr(parts[13], -1)
-	stime := AtoiOr(parts[14], -1)
-	if utime < 0 || stime < 0 {
-		return -1, -1
-	}
-	return utime, stime
-}
-*/
 
 func procFsStatOf(pid int) *procFsStat {
 	result := newProcFsStat()

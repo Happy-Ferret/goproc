@@ -57,10 +57,10 @@ func TestPidOf(t *testing.T) {
 }
 
 func TestPropertiesOf(t *testing.T) {
-	got := propertiesOf(1, []int{VmUsage, CpuUsage})
+	got := propertiesOf(18877, []int{VmUsage, CpuUsage}) // heavy proc on my Ubuntu
 	if len(got) > 0 {
 		fmt.Printf("VmUsage: [%v] CpuUsage: [%v]\n", got[VmUsage], got[CpuUsage])
 	} else {
-		t.Errorf("private [darwin only] propertiesOf() failed")
+		t.Errorf("private [linux only] propertiesOf() failed")
 	}
 }
