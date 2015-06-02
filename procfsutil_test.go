@@ -18,6 +18,7 @@ func TestProcFsCpuTimeTotal(t *testing.T) {
 	}
 }
 
+/*
 func TestProcFsJiffiesOf(t *testing.T) {
 	utimeGot, stimeGot := procFsJiffiesOf(1)
 	if utimeGot < 0 || stimeGot < 0 {
@@ -25,4 +26,4 @@ func TestProcFsJiffiesOf(t *testing.T) {
 	} else {
 		fmt.Printf("utime,stime => procFsJiffiesOfl() == %v, %v\n", utimeGot, stimeGot)
 	}
-}
+*/

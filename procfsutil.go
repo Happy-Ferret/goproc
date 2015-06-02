@@ -17,6 +17,30 @@ const procFsRoot = "/proc"
 const procFsPidPath = "/proc/%d/%s"
 const procFsPath = "/proc/%s"
 
+type procFsStat struct {
+	name string
+	utime int
+	stime int
+	vsize int
+}
+
+const (
+	procFsStatName = 1
+	procFsStatUTime = 13
+	procFsStatSTime = 14
+	procFsStatVmSize = 22
+)
+
+const procFsStatHighestIndex = 22
+
+func newProcFsStat() *procFsStat {
+	stat := new(procFsStat)
+	stat.name = ""
+	stat.utime = -1
+	stat.stime = -1
+	return stat
+}
+
 func procFsOpenPid(pid int, name string) (*os.File, error) {
 	return os.Open(fmt.Sprintf(procFsPidPath, pid, name))
 }
@@ -26,7 +50,6 @@ func procFsOpen(name string) (*os.File, error) {
 }
 
 func procFsParseStatusItems(pid int, keys []string) []string {
-	// TODO: change this using only /proc/pid/stat -> struct
 	status, err := procFsOpenPid(pid, "status")
 	if err != nil {
 		return make([]string, 0)
@@ -102,6 +125,7 @@ func procFsCpuTimeTotal() int {
 	return total
 }
 
+/*
 func procFsJiffiesOf(pid int) (int, int) {
 	stat, err := procFsOpenPid(pid, "stat")
 	defer stat.Close()
@@ -122,6 +146,31 @@ func procFsJiffiesOf(pid int) (int, int) {
 		return -1, -1
 	}
 	return utime, stime
+}
+*/
+
+func procFsStatOf(pid int) *procFsStat {
+	result := newProcFsStat()
+
+	stat, err := procFsOpenPid(pid, "stat")
+	defer stat.Close()
+	if err != nil {
+		return result
+	}
+	scanner := bufio.NewScanner(stat)
+	if !scanner.Scan() {
+		return result
+	}
+	parts := strings.Fields(scanner.Text())
+	if len(parts) < procFsStatHighestIndex {
+		return result
+	}
+	result.name = parts[procFsStatName][1:len(parts[procFsStatName])-1] // strip '(', ')'
+	result.utime = AtoiOr(parts[procFsStatUTime], -1)
+	result.utime = AtoiOr(parts[procFsStatSTime], -1)
+	result.vsize = AtoiOr(parts[procFsStatVmSize], -1)
+
+	return result
 }
 
 func procFsTryNameToPid(name string) int {
