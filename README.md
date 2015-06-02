@@ -15,6 +15,9 @@ func main() {
   processId := process.PidOf("launchd") // result: 1 (on OS X)
   count := process.Count() // result: int count of running processes
   pids := process.ListPids() // result: []int array with running pids
+  props := process.PropertiesOf(PidOf("Xorg"), []Property{VmUsage, CpuUsage}) // result: map[Property]interface{}
+  xorgVm := props[VmUsage] // int (bytes)
+  xorgCpu := props[CpuUsage] // float32 (%), this value for now is correct only under Linux
 }
 ```
 
