@@ -23,7 +23,7 @@ func listPids() []int {
 	return procFsListPids()
 }
 
-func propertiesOf(pid int, keys []int) PropertyMap {
+func propertiesOf(pid int, keys []Property) PropertyMap {
 	result := make(PropertyMap)
 	stat := procFsStatOf(pid)
 

@@ -68,7 +68,7 @@ type processInfo struct {
 	cpuUsage int32
 }
 
-func propertiesOf(pid int, keys []int) PropertyMap {
+func propertiesOf(pid int, keys []Property) PropertyMap {
 	result := make(PropertyMap)
 	var thread processInfoHandler = threadInfoHandler
 	var task processInfoHandler = taskInfoHandler

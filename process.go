@@ -2,12 +2,14 @@
 
 package process
 
+type Property int
+
 const (
-	VmUsage = iota
+	VmUsage Property = iota
 	CpuUsage
 )
 
-type PropertyMap map[int]interface{}
+type PropertyMap map[Property]interface{}
 
 func NameOf(pid int) string {
 	return nameOf(pid)
@@ -35,6 +37,6 @@ func PidOf(name string) int {
 	return result
 }
 
-func PropertiesOf(pid int, keys []int) PropertyMap {
+func PropertiesOf(pid int, keys []Property) PropertyMap {
 	return propertiesOf(pid, keys)
 }
