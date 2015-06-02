@@ -49,6 +49,7 @@ func procFsOpen(name string) (*os.File, error) {
 	return os.Open(fmt.Sprintf(procFsPath, name))
 }
 
+/*
 func procFsParseStatusItems(pid int, keys []string) []string {
 	status, err := procFsOpenPid(pid, "status")
 	if err != nil {
@@ -71,6 +72,7 @@ func procFsParseStatusItems(pid int, keys []string) []string {
 
 	return values
 }
+*/
 
 func procFsListPids() []int {
 	items, err := ioutil.ReadDir(procFsRoot)
