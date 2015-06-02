@@ -49,31 +49,6 @@ func procFsOpen(name string) (*os.File, error) {
 	return os.Open(fmt.Sprintf(procFsPath, name))
 }
 
-/*
-func procFsParseStatusItems(pid int, keys []string) []string {
-	status, err := procFsOpenPid(pid, "status")
-	if err != nil {
-		return make([]string, 0)
-	}
-	defer status.Close()
-
-	values := make([]string, len(keys))
-	i := 0
-
-	scanner := bufio.NewScanner(status)
-	for scanner.Scan() {
-		if parts := strings.Split(scanner.Text(), ":"); len(parts) == 2 {
-			if currkey := strings.TrimSpace(parts[0]); strElemIndexOf(currkey, keys) >= 0 {
-				values[i] = strings.TrimSpace(parts[1])
-				i++
-			}
-		}
-	}
-
-	return values
-}
-*/
-
 func procFsListPids() []int {
 	items, err := ioutil.ReadDir(procFsRoot)
 	if err != nil {
