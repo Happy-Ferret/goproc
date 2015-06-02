@@ -30,9 +30,8 @@ const (
 	procFsStatUTime  = 13
 	procFsStatSTime  = 14
 	procFsStatVmSize = 22
+	procFsStatHighestIndex = procFsStatVmSize 
 )
-
-const procFsStatHighestIndex = 22
 
 func newProcFsStat() *procFsStat {
 	stat := new(procFsStat)
