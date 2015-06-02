@@ -4,7 +4,7 @@ package process
 
 import "strconv"
 
-func AtoiOr(s string, alt int) int {
+func atoiOr(s string, alt int) int {
 	value, err := strconv.Atoi(s)
 	if err == nil {
 		return value

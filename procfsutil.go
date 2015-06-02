@@ -9,25 +9,26 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strconv"
 	"strings"
 )
 
-const procFsRoot = "/proc"
-const procFsPidPath = "/proc/%d/%s"
-const procFsPath = "/proc/%s"
+const (
+	procFsRoot = "/proc"
+	procFsPidPath = "/proc/%d/%s"
+	procFsPath = "/proc/%s"
+)
 
 type procFsStat struct {
-	name string
+	name  string
 	utime int
 	stime int
 	vsize int
 }
 
 const (
-	procFsStatName = 1
-	procFsStatUTime = 13
-	procFsStatSTime = 14
+	procFsStatName   = 1
+	procFsStatUTime  = 13
+	procFsStatSTime  = 14
 	procFsStatVmSize = 22
 )
 
@@ -82,7 +83,7 @@ func procFsListPids() []int {
 	pids[0] = -1 // mark value
 	i := 0
 	for _, item := range items {
-		pid := procFsTryNameToPid(item.Name())
+		pid := atoiOr(item.Name(), -1)
 		if pid > 0 {
 			pids[i] = pid
 			i++
@@ -114,7 +115,7 @@ func procFsCpuTimeTotal() int {
 	}
 	total := 0
 	for _, cpuTime := range parts[1:] {
-		partial := AtoiOr(cpuTime, -1)
+		partial := atoiOr(cpuTime, -1)
 		if partial < 0 {
 			return -1
 		}
@@ -139,19 +140,10 @@ func procFsStatOf(pid int) *procFsStat {
 	if len(parts) < procFsStatHighestIndex {
 		return result
 	}
-	result.name = parts[procFsStatName][1:len(parts[procFsStatName])-1] // strip '(', ')'
-	result.utime = AtoiOr(parts[procFsStatUTime], -1)
-	result.utime = AtoiOr(parts[procFsStatSTime], -1)
-	result.vsize = AtoiOr(parts[procFsStatVmSize], -1)
+	result.name = parts[procFsStatName][1 : len(parts[procFsStatName])-1] // strip '(', ')'
+	result.utime = atoiOr(parts[procFsStatUTime], -1)
+	result.utime = atoiOr(parts[procFsStatSTime], -1)
+	result.vsize = atoiOr(parts[procFsStatVmSize], -1)
 
 	return result
-}
-
-func procFsTryNameToPid(name string) int {
-	pid, err := strconv.Atoi(name)
-	if err != nil || pid <= 0 {
-		return -1
-	}
-
-	return pid
 }
