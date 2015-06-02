@@ -57,7 +57,7 @@ func TestPidOf(t *testing.T) {
 }
 
 func TestPropertiesOf(t *testing.T) {
-	got := propertiesOf(18877, []int{VmUsage, CpuUsage}) // heavy proc on my Ubuntu
+	got := propertiesOf(PidOf("Xorg"), []Property{VmUsage, CpuUsage})
 	if len(got) > 0 {
 		fmt.Printf("VmUsage: [%v] CpuUsage: [%v]\n", got[VmUsage], got[CpuUsage])
 	} else {
