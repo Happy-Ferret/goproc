@@ -61,10 +61,10 @@ func listPids() []int {
 type processInfo struct {
 	pid         int
 	virtualSize int64
-	//threadUserTime int64	// live time (unix time)
-	//threadSystemTime int64	// live time (unix time)
-	//taskUserTime int64		// terminated time (unix time)
-	//taskSystemTime int64	// terminated time (unix time)
+	//threadUserTime int64
+	//threadSystemTime int64
+	//taskUserTime int64
+	//taskSystemTime int64
 	cpuUsage int32
 }
 
