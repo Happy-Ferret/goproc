@@ -2,7 +2,8 @@
 Process management API for Go.
 
 ## Project Status
-This is a stub. Work in progress...
+This is a stub. No more than _explorative programming_ for the moment.
+Work in progress...
 
 ## Example
 ```go
