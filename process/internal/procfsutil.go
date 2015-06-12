@@ -2,7 +2,7 @@
 
 // +build !darwin linux
 
-package process
+package internal
 
 import (
 	"bufio"
