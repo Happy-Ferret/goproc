@@ -9,7 +9,7 @@ Work in progress...
 ```go
 package main
 
-import "github.com/gsscoder/goproc"
+import "github.com/gsscoder/goproc/process"
 
 func main() {
   processName := process.NameOf(1) // result: "init" (on Linux)
@@ -25,5 +25,6 @@ func main() {
 ## Tests
 Depending on function (``process.NameOf()`` for example) and platform type you may need run as root.
 ```sh
+cd /path/to/goproc/process
 sudo go test
 ```
