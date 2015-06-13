@@ -6,31 +6,32 @@ package process
 #include <unistd.h>
 */
 import "C"
+import "github.com/gsscoder/goproc/process/internal/procfs"
 import "time"
 //import "strings"
 //import "fmt"
 
 func nameOf(pid int) string {
-	return procFsStatOf(pid).name
+	return procfs.StatOf(pid).Name
 }
 
 
 func count() int {
-	return len(procFsListPids())
+	return len(procfs.ListPids())
 }
 
 func listPids() []int {
-	return procFsListPids()
+	return procfs.ListPids()
 }
 
 func propertiesOf(pid int, keys []Property) PropertyMap {
 	result := make(PropertyMap)
-	stat := procFsStatOf(pid)
+	stat := procfs.StatOf(pid)
 
 	for _, key := range keys {
 		switch key {
 		case VmUsage:
-			result[VmUsage] = stat.vsize
+			result[VmUsage] = stat.VSize
 
 		case CpuUsage:
 			result[CpuUsage] = cpuUsageOf(pid, func() {time.Sleep(time.Second)})
@@ -47,17 +48,17 @@ func cpuCount() int {
 
 func cpuUsageOf(pid int, waitHandler func()) float32 {
 	// as explained in http://goo.gl/fjrV16
-	stat1 := procFsStatOf(pid)
-	utime1 := stat1.utime
-	stime1 := stat1.stime
-	cputime1 := procFsCpuTimeTotal()
+	stat1 := procfs.StatOf(pid)
+	utime1 := stat1.UTime
+	stime1 := stat1.STime
+	cputime1 := procfs.CpuTimeTotal()
 
 	waitHandler()
 
-	stat2 := procFsStatOf(pid)
-	utime2 := stat2.utime
-	stime2 := stat2.stime
-	cputime2 := procFsCpuTimeTotal()
+	stat2 := procfs.StatOf(pid)
+	utime2 := stat2.UTime
+	stime2 := stat2.STime
+	cputime2 := procfs.CpuTimeTotal()
 
 	return float32(cpuCount() * ((utime2 + stime2) - (utime1 + stime1)) * 100) / float32(cputime2 - cputime1)
 }
