@@ -14,16 +14,12 @@ func nameOf(pid int) string {
 	name := C.CString(strings.Repeat("\x00", 1024))
 	namePtr := unsafe.Pointer(name)
 	defer C.free(namePtr)
+
 	nameLen := C.proc_name(C.int(pid), namePtr, C.uint32_t(1024))
-	var result string
-
 	if nameLen > 0 {
-		result = C.GoString(name)
-	} else {
-		result = ""
+		return C.GoString(name)
 	}
-
-	return result
+	return ""
 }
 
 func count() int {
@@ -69,7 +65,7 @@ type processInfo struct {
 }
 
 func propertiesOf(pid int, keys []Property) PropertyMap {
-	result := make(PropertyMap)
+	propMap := make(PropertyMap)
 	var thread processInfoHandler = threadInfoHandler
 	var task processInfoHandler = taskInfoHandler
 	chain := thread.compose(task)
@@ -77,12 +73,12 @@ func propertiesOf(pid int, keys []Property) PropertyMap {
 	for _, key := range keys {
 		switch key {
 		case VmUsage:
-			result[VmUsage] = taskInfo.virtualSize
+			propMap[VmUsage] = taskInfo.virtualSize
 		case CpuUsage:
-			result[CpuUsage] = taskInfo.cpuUsage
+			propMap[CpuUsage] = taskInfo.cpuUsage
 		}
 	}
-	return result
+	return propMap
 }
 
 // as in https://gist.github.com/gotohr/7005197
